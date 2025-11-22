@@ -3,7 +3,8 @@ import Link from 'next/link';
 const statCards = [
   { title: 'Roast Sessions', action: 'Plan & run weekly roasts', href: '/roast-sessions' },
   { title: 'Orders', action: 'Import from Shopify and manage skips', href: '/orders' },
-  { title: 'Settings', action: 'Coffees, blends, mappings', href: '/settings' }
+  { title: 'Settings', action: 'Coffees, blends, mappings', href: '/settings' },
+  { title: 'Shopify Test', action: 'Verify unfulfilled orders feed', href: '/shopify-test' }
 ];
 
 export default function HomePage() {
