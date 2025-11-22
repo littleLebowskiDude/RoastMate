@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { fetchShopifyOrders } from '@/lib/shopify';
 import { OrderStatus, OrderSource } from '@prisma/client';
 
+// Avoid static rendering attempts during build; always run server-side.
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const imports = await fetchShopifyOrders();
   const variantMappings = await prisma.variantMapping.findMany();
