@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Coffee {
+  id                  String   @id @default(cuid())
+  name                String
+  roastLossPercentage Float
+  costPerKg           Float?
+  active              Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  blendComponents     BlendComponent[]
+  orderItems          OrderItem[]      @relation("OrderItemCoffee")
+  roastResults        RoastResult[]
+  onHandStock         OnHandStock[]
+  variantMappings     VariantMapping[]
+}
+
+model Blend {
+  id         String           @id @default(cuid())
+  name       String
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  components BlendComponent[]
+  orderItems OrderItem[]      @relation("OrderItemBlend")
+  onHandStock OnHandStock[]
+  variantMappings VariantMapping[]
+}
+
+model BlendComponent {
+  id        String   @id @default(cuid())
+  blend     Blend    @relation(fields: [blendId], references: [id], onDelete: Cascade)
+  blendId   String
+  coffee    Coffee   @relation(fields: [coffeeId], references: [id])
+  coffeeId  String
+  percentage Float
+}
+
+model Order {
+  id            String     @id @default(cuid())
+  source        OrderSource
+  sourceOrderId String
+  customerName  String
+  status        OrderStatus @default(IMPORTED)
+  roastSession  RoastSession? @relation(fields: [roastSessionId], references: [id])
+  roastSessionId String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId         String
+  variantId       String
+  productName     String
+  sizeG           Int
+  grindType       String
+  quantity        Int
+  mappedCoffee    Coffee?  @relation("OrderItemCoffee", fields: [mappedCoffeeId], references: [id])
+  mappedCoffeeId  String?
+  mappedBlend     Blend?   @relation("OrderItemBlend", fields: [mappedBlendId], references: [id])
+  mappedBlendId   String?
+  mappedIsBlend   Boolean
+}
+
+model VariantMapping {
+  id         String  @id @default(cuid())
+  variantId  String  @unique
+  title      String
+  coffee     Coffee? @relation(fields: [coffeeId], references: [id])
+  coffeeId   String?
+  blend      Blend?  @relation(fields: [blendId], references: [id])
+  blendId    String?
+  isBlend    Boolean
+}
+
+model RoastSession {
+  id         String        @id @default(cuid())
+  sessionDate DateTime
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  roastResults RoastResult[]
+  onHandStock OnHandStock[]
+  orders      Order[]
+}
+
+model OnHandStock {
+  id               String        @id @default(cuid())
+  roastSession     RoastSession  @relation(fields: [roastSessionId], references: [id], onDelete: Cascade)
+  roastSessionId   String
+  coffee           Coffee?       @relation(fields: [coffeeId], references: [id])
+  coffeeId         String?
+  blend            Blend?        @relation(fields: [blendId], references: [id])
+  blendId          String?
+  onHandRoastedG   Float
+}
+
+model RoastResult {
+  id                  String       @id @default(cuid())
+  roastSession        RoastSession @relation(fields: [roastSessionId], references: [id], onDelete: Cascade)
+  roastSessionId      String
+  coffee              Coffee       @relation(fields: [coffeeId], references: [id])
+  coffeeId            String
+  requiredRoastedG    Float
+  requiredGreenG      Float
+  dropsRequired       Int
+  totalGreen          Float
+  totalRoastedOutput  Float
+  surplusRoastedG     Float
+}
+
+enum OrderStatus {
+  IMPORTED
+  SKIPPED
+  INCLUDED
+}
+
+enum OrderSource {
+  SHOPIFY
+  XERO
+  MANUAL
+}
