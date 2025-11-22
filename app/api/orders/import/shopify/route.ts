@@ -5,6 +5,7 @@ import { OrderStatus, OrderSource } from '@prisma/client';
 
 // Avoid static rendering attempts during build; always run server-side.
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET() {
   const imports = await fetchShopifyOrders();

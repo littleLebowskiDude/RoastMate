@@ -2,6 +2,10 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 
+// Prevent static rendering; always execute server-side.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function GET() {
   const [coffees, blends, mappings] = await Promise.all([
     prisma.coffee.findMany({ orderBy: { name: 'asc' } }),

@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 // Ensure this API route is always run on-demand (not at build time).
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);

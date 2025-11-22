@@ -3,6 +3,10 @@ import PDFDocument from 'pdfkit';
 import { prisma } from '@/lib/prisma';
 import { OrderStatus } from '@prisma/client';
 
+// Prevent static rendering; always execute server-side.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function GET(_: Request, { params }: { params: { id: string } }) {
   const orders = await prisma.order.findMany({
     where: { roastSessionId: params.id, status: OrderStatus.INCLUDED },
