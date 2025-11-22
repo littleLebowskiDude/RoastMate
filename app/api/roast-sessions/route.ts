@@ -5,6 +5,8 @@ import { OrderStatus } from '@prisma/client';
 // Prevent static rendering; always execute server-side.
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+export const revalidate = 0;
+export const fetchCache = 'force-no-store';
 
 export async function GET() {
   const sessions = await prisma.roastSession.findMany({
