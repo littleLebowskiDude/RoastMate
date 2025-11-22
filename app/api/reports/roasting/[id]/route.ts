@@ -13,10 +13,11 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   }
 
   const coffeeLookup = await prisma.coffee.findMany();
-  const coffeeIndex = Object.fromEntries(coffeeLookup.map((c) => [c.id, c.name]));
+  const coffeeIndex = Object.fromEntries(coffeeLookup.map((c) => [c.id, c]));
   const rows = session.roastResults.map((r) => ({
     ...r,
-    coffeeName: coffeeIndex[r.coffeeId] ?? 'Unknown'
+    coffeeName: coffeeIndex[r.coffeeId]?.name ?? 'Unknown',
+    roastLossPercentage: coffeeIndex[r.coffeeId]?.roastLossPercentage ?? 0
   }));
 
   return buildRoastingPdf(session.sessionDate.toISOString().slice(0, 10), rows);

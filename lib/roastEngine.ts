@@ -65,6 +65,7 @@ export function roastEngine({
   const roastedNeeded: Record<string, number> = {};
   const singleNeeds: Record<string, number> = {};
   const blendComponentNeeds: Record<string, Record<string, number>> = {};
+  const blendTotals: Record<string, number> = {};
   const coffeeIndex = Object.fromEntries(coffees.map((c) => [c.id, c]));
   const blendIndex = Object.fromEntries(blends.map((b) => [b.id, b]));
   const workingOnHand: OnHandLookup = {

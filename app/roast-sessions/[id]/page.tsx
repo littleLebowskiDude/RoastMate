@@ -133,11 +133,11 @@ export default function RoastSessionPage({ params }: { params: { id: string } })
       setOnHand([
         ...Object.entries(data.onHand?.coffees || {}).map(([coffeeId, qty]) => ({
           coffeeId,
-          onHandRoastedG: qty
+          onHandRoastedG: Number(qty)
         })),
         ...Object.entries(data.onHand?.blends || {}).map(([blendId, qty]) => ({
           blendId,
-          onHandRoastedG: qty
+          onHandRoastedG: Number(qty)
         }))
       ]);
     } catch (err) {
